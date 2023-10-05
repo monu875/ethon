@@ -7,7 +7,8 @@ async def start_srb(event, st):
     await event.reply(st, 
                       buttons=[
                               [Button.inline("SET THUMB.", data="set"),
-                               Button.inline("REM THUMB.", data="rem")]])
+                               Button.inline("REM THUMB.", data="rem")],
+                              [Button.url("ADMIN", url="https://t.me/Leo_memlon")]])
                               
     
 async def vc_menu(event):
@@ -17,5 +18,5 @@ async def vc_menu(event):
                          Button.inline("SOURCE", data="source")],
                         [Button.inline("NOTICE.", data="notice"),
                          Button.inline("Main.", data="help")],
-                        [Button.url("DEVELOPER", url="t.me/Leo_memlon")]])
+                        [Button.url("DEVELOPER", url="https://t.me/Leo_memlon")]])
     
