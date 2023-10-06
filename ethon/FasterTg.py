@@ -3,6 +3,7 @@
 
 import asyncio
 import hashlib
+import inspect
 import logging
 import math
 import os
@@ -44,6 +45,8 @@ from telethon.tl.types import (
     TypeInputFile,
 )
 
+filename = ""
+
 log: logging.Logger = logging.getLogger("FasterTg")
 
 TypeLocation = Union[
@@ -73,6 +76,7 @@ class DownloadSender:
         count: int,
     ) -> None:
         self.sender = sender
+        self.client = client
             req = InvokeWithLayerRequest(LAYER, self.client._init_request)
             await sender.send(req)
             self.auth_key = sender.auth_key
@@ -88,7 +92,7 @@ class DownloadSender:
         connection_count = connection_count or self._get_connection_count(file_size)
         part_size = (part_size_kb or utils.get_appropriated_part_size(file_size)) * 1024
         part_count = (file_size + part_size - 1) // part_size
-        is_large = file_size > 10 * (1024**2)
+        is_large = file_size > 10 * 1024 * 1024
         await self._init_upload(connection_count, file_id, part_count, is_large)
         return part_size, part_count, is_large
 
@@ -113,7 +117,9 @@ class DownloadSender:
 
         part = 0
         while part < part_count:
-            tasks = [self.loop.create_task(sender.next()) for sender in self.senders]
+            tasks = []
+            for sender in self.senders:
+                tasks.append(self.loop.create_task(sender.next()))
             for task in tasks:
                 data = await task
                 if not data:
@@ -152,7 +158,7 @@ async def _internal_transfer_to_telegram(
     for data in stream_file(response):
         if progress_callback:
             try:
-                await _maybe_await(progress_callback(response.tell(), file_size))
+                await progress_callback(response.tell(), file_size)
             except BaseException:
                 pass
         if not is_large:
@@ -192,7 +198,7 @@ async def download_file(
         out.write(x)
         if progress_callback:
             try:
-                await _maybe_await(progress_callback(out.tell(), size))
+                await progress_callback(out.tell(), size)
             except BaseException:
                 pass
     return out
@@ -204,6 +210,7 @@ async def upload_file(
     filename: str,
     progress_callback: callable = None,
 ) -> TypeInputFile:
-    return (
-        await _internal_transfer_to_telegram(client, file, filename, progress_callback)
-    )[0]
+    global filename
+    filename = name
+    return (await _internal_transfer_to_telegram(client, file, filename, progress_callback))[0]
+    
