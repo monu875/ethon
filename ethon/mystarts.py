@@ -9,14 +9,3 @@ async def start_srb(event, st):
                               [Button.inline("SET THUMB.", data="set"),
                                Button.inline("REM THUMB.", data="rem")],
                               [Button.url("ADMIN", url="https://t.me/Leo_memlon")]])
-                              
-    
-async def vc_menu(event):
-    await event.edit("**VIDEO CONVERTOR v1.4**", 
-                    buttons=[
-                        [Button.inline("info.", data="info"),
-                         Button.inline("SOURCE", data="source")],
-                        [Button.inline("NOTICE.", data="notice"),
-                         Button.inline("Main.", data="help")],
-                        [Button.url("DEVELOPER", url="https://t.me/Leo_memlon")]])
-    
