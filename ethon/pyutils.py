@@ -28,9 +28,8 @@ def file_extension(file_path):
 #Limit = maximun length of the list
 def Q_length(List, limit):
     length = len(List)
-    if length > int(limit) + 5:
+    if length > int(limit) + 1:
         return 'FULL'
     else:
         return length
     
-
