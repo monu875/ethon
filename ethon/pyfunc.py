@@ -71,7 +71,7 @@ def duration(pathToInputVideo):
   
 def video_metadata(file):
     height = 720
-    width = 1080
+    width = 1280
     duration = 0
     try:
         height, width, duration = findVideoResolution(file)
@@ -94,6 +94,6 @@ def video_metadata(file):
                         duration = 0
         except Exception as e:
             print(e)
-            height, width, duration = 720, 1080, 0
+            height, width, duration = 720, 1280, 0
     data = {'width' : width, 'height' : height, 'duration' : duration }
     return data
